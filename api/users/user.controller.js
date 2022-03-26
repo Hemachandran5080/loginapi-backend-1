@@ -34,16 +34,17 @@ login: (req, res) => {
       if (err) {
         console.log(err);
       }
-      if (!results) {
+      else if (!results) {
         return res.json({
           success: 0,
           data: "Invalid email or password"
         });
       }
-      const result = compareSync(body.password, results.password);
+      const result = compareSync(body.password, results[0].PASSWORD);
       if (result) {
+        // console.log(results[0].PASSWORD);
         results.password = undefined;
-        const jsontoken = sign({ result: results }, "qwe1234", {
+        const jsontoken = sign({ result: results }, process.env.TOKEN_KEY, {
           expiresIn: "1h"
         });
         return res.json({
